@@ -1,13 +1,14 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
+import { useAuth } from '@/contexts/AuthContext';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const { user } = useAuth();
 
   return (
     <Tabs
@@ -19,15 +20,22 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: user ? 'Dashboard' : 'Login',
+          tabBarIcon: ({ color }) => (
+            <IconSymbol 
+              size={28} 
+              name={user ? "chart.bar" : "person.circle"} 
+              color={color} 
+            />
+          ),
         }}
       />
+      
+      {/* Only show explore tab when user is logged in - but we're not using it now */}
       <Tabs.Screen
         name="explore"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          href: null, // This completely hides the tab
         }}
       />
     </Tabs>

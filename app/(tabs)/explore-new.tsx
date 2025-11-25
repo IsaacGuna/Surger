@@ -1,5 +1,4 @@
-import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Alert, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 
 import ParallaxScrollView from '@/components/parallax-scroll-view';
@@ -8,7 +7,6 @@ import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
 export default function DoctorProfileScreen() {
-  const [isNewUser, setIsNewUser] = useState(false); // TODO: Get from auth state
   const [profile, setProfile] = useState({
     specialty: '',
     subspecialty: '',
@@ -18,123 +16,13 @@ export default function DoctorProfileScreen() {
     certifications: '',
     currentWorkload: '',
     fatigueLevel: '1',
-    firstName: 'Dr. John',
-    lastName: 'Smith',
-    email: 'john.smith@hospital.com',
   });
 
-  // TODO: Check if user is logged in and has profile data
-  useEffect(() => {
-    // Simulate checking if profile exists
-    // In real app, this would check authentication state and existing profile data
-    const hasProfile = true; // TODO: Get from storage/API - set to true to show dashboard
-    setIsNewUser(!hasProfile);
-    
-    if (hasProfile) {
-      // TODO: Load existing profile data
-      setProfile({
-        ...profile,
-        specialty: 'Cardiothoracic Surgery',
-        subspecialty: 'Pediatric Cardiac Surgery',
-        experienceYears: '15',
-        casesCompleted: '1,250',
-        successRate: '96.8',
-        certifications: 'Board Certified in Thoracic Surgery, American Board of Surgery',
-        currentWorkload: '12 surgeries/week',
-        fatigueLevel: '3',
-      });
-    }
-  }, []);
-
-  const handleSave = async () => {
+  const handleSave = () => {
     // TODO: Save to backend/storage
-    setIsNewUser(false);
     Alert.alert('Profile Saved', 'Your surgeon profile has been updated successfully!');
   };
 
-  const handleEdit = () => {
-    setIsNewUser(true);
-  };
-
-  const handleLogout = () => {
-    Alert.alert(
-      'Logout',
-      'Are you sure you want to logout?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Logout', style: 'destructive', onPress: () => router.replace('/(tabs)') }
-      ]
-    );
-  };
-
-  if (!isNewUser) {
-    // Existing user - show profile dashboard
-    return (
-      <ParallaxScrollView
-        headerBackgroundColor={{ light: '#E8F5E8', dark: '#2D4A2D' }}
-        headerImage={
-          <IconSymbol
-            size={310}
-            color="#4A90E2"
-            name="person.circle.fill"
-            style={styles.headerImage}
-          />
-        }>
-        <ThemedView style={styles.titleContainer}>
-          <ThemedText type="title">Welcome Back!</ThemedText>
-        </ThemedView>
-        
-        <ThemedView style={styles.dashboardContainer}>
-          <ThemedView style={styles.profileCard}>
-            <ThemedText type="subtitle">{profile.firstName} {profile.lastName}</ThemedText>
-            <ThemedText style={styles.email}>{profile.email}</ThemedText>
-            <ThemedText style={styles.specialty}>{profile.specialty}</ThemedText>
-            {profile.subspecialty && (
-              <ThemedText style={styles.subspecialty}>{profile.subspecialty}</ThemedText>
-            )}
-          </ThemedView>
-
-          <ThemedView style={styles.statsContainer}>
-            <ThemedText type="subtitle">Your Statistics</ThemedText>
-            <ThemedView style={styles.statsGrid}>
-              <ThemedView style={styles.statItem}>
-                <ThemedText style={styles.statNumber}>{profile.experienceYears}</ThemedText>
-                <ThemedText style={styles.statLabel}>Years Experience</ThemedText>
-              </ThemedView>
-              <ThemedView style={styles.statItem}>
-                <ThemedText style={styles.statNumber}>{profile.casesCompleted}</ThemedText>
-                <ThemedText style={styles.statLabel}>Cases Completed</ThemedText>
-              </ThemedView>
-              <ThemedView style={styles.statItem}>
-                <ThemedText style={styles.statNumber}>{profile.successRate}%</ThemedText>
-                <ThemedText style={styles.statLabel}>Success Rate</ThemedText>
-              </ThemedView>
-              <ThemedView style={styles.statItem}>
-                <ThemedText style={styles.statNumber}>{profile.currentWorkload}</ThemedText>
-                <ThemedText style={styles.statLabel}>Current Load</ThemedText>
-              </ThemedView>
-            </ThemedView>
-          </ThemedView>
-
-          <ThemedView style={styles.actionButtons}>
-            <TouchableOpacity style={styles.editButton} onPress={handleEdit}>
-              <ThemedText style={styles.editButtonText}>Edit Profile</ThemedText>
-            </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.matchButton} onPress={() => Alert.alert('Coming Soon', 'Patient matching feature coming soon!')}>
-              <ThemedText style={styles.matchButtonText}>Find Patient Matches</ThemedText>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-              <ThemedText style={styles.logoutButtonText}>Logout</ThemedText>
-            </TouchableOpacity>
-          </ThemedView>
-        </ThemedView>
-      </ParallaxScrollView>
-    );
-  }
-
-  // New user or editing - show profile form
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#E8F5E8', dark: '#2D4A2D' }}
@@ -147,7 +35,7 @@ export default function DoctorProfileScreen() {
         />
       }>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Setup Your Profile</ThemedText>
+        <ThemedText type="title">Doctor Profile</ThemedText>
       </ThemedView>
       
       <ThemedView style={styles.formContainer}>
@@ -276,95 +164,6 @@ const styles = StyleSheet.create({
     gap: 8,
     marginBottom: 20,
   },
-  // Dashboard styles
-  dashboardContainer: {
-    gap: 24,
-  },
-  profileCard: {
-    backgroundColor: '#f8f9fa',
-    borderRadius: 12,
-    padding: 20,
-    gap: 8,
-  },
-  email: {
-    opacity: 0.7,
-    fontSize: 14,
-  },
-  specialty: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#4A90E2',
-  },
-  subspecialty: {
-    fontSize: 16,
-    opacity: 0.8,
-  },
-  statsContainer: {
-    gap: 16,
-  },
-  statsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-  },
-  statItem: {
-    backgroundColor: '#f8f9fa',
-    borderRadius: 8,
-    padding: 16,
-    alignItems: 'center',
-    minWidth: '45%',
-    flex: 1,
-  },
-  statNumber: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#4A90E2',
-  },
-  statLabel: {
-    fontSize: 12,
-    opacity: 0.7,
-    textAlign: 'center',
-    marginTop: 4,
-  },
-  actionButtons: {
-    gap: 12,
-  },
-  editButton: {
-    backgroundColor: '#4A90E2',
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-  },
-  editButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  matchButton: {
-    backgroundColor: '#2E8B57',
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-  },
-  matchButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  logoutButton: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: '#ff6b6b',
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-  },
-  logoutButtonText: {
-    color: '#ff6b6b',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  // Form styles
   formContainer: {
     gap: 20,
   },
